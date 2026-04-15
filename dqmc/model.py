@@ -122,5 +122,10 @@ def hubbard_hypercube(shape, u=0.0, eps=0.0, hop=1.0, mu=0.0, beta=0.0, periodic
     model = HubbardModel(np.eye(dim), u, eps, hop, mu, beta)
     model.add_atom()
     model.add_connections(1)
-    model.build(shape, relative=True, periodic=periodic)
+    if isinstance(shape, int):
+        shape = shape - 1
+    else:
+        shape = tuple(s - 1 for s in shape)
+
+    model.build(shape, periodic=periodic)
     return model

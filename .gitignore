@@ -1,61 +1,30 @@
-# Specific files
-
-# Byte-compiled / optimized / cached / DLL files
+# Python bytecode
 __pycache__/
-.idea/
-.hypothesis/
-.pytest_cache/
-*.so
-*.exe
+*.py[cod]
 
-# Distribution / packaging
-.Python
+# Build artifacts
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# jupyter checkpoints
-.ipynb_checkpoints/
+# Test / cache
+.pytest_cache/
+.hypothesis/
+.coverage
 
-# LaTeX temporary files
-*.aux
+# Logs
 *.log
-*.toc
 
-# PDF output - usually a bad idea to keep this in Git
-*.pdf
+# Generated plots/images
+*.png
 
-# Latexmk
-*.fdb_latexmk
+# Backup files
+*.bak
 
-# SyncTeX
-*.synctex.gz
+# IDE/editor
+.vscode/
+.idea/
 
-# LaTeX Beamer
-*.snm
-*.vrb
-*.nav
-*.out
-
-# BibTeX
-*.bbl
-*.blg
-
-# Sublime Text Project Files (usually contain absolute paths)
-*.sublime-project
-*.sublime-workspace
+# OS files
+.DS_Store
+Thumbs.db

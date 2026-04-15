@@ -8,51 +8,31 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  code-change:
-    runs-on: ubuntu-latest
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          paths_ignore: '["docs/**"]'  # skip unit-tests if only docs were changed
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-
-
   tests:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.7", "3.9"]  # check oldest and latest supported version
-        other-os: [false]
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13']
 
-    runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.other-os }}  # don't cancel due to OS specific failures
-    env:
-      OS: ${{ matrix.os }}
-      PYTHON: ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest pytest-cov codecov
-        pip install -r requirements.txt
-    - name: Build Fortran source code
-      run: |
-        make
-    - name: Run tests
-      run: |
-        pytest dqmc/ --cov=dqmc --cov-report=xml -v
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        env_vars: OS,PYTHON
-        verbose: True
-    - name: Coverage
-      run: codecov
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install build tools + deps
+        run: pip install "meson-python>=0.15.0" meson ninja numpy build pytest pytest-cov
+
+      - name: Install package
+        run: pip install --no-build-isolation -e .
+
+      - name: Run tests
+        run: pytest dqmc/tests/ -v --cov=dqmc --cov-report=xml
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          verbose: true

@@ -1,0 +1,49 @@
+# check_lattice_shape.py
+# Verify whether lattice shape metadata is zero-indexed or truly wrong
+
+from dqmc import hubbard_hypercube
+
+# Build explicit 4x4 lattice
+model = hubbard_hypercube(
+    (4, 4),      # intended lattice size
+    u=4.0,
+    eps=0.0,
+    hop=1.0,
+    mu=0.0,
+    beta=5.0,
+    periodic=True
+)
+
+print("==== LATTICE SHAPE DEBUG ====\n")
+
+# Raw stored shape
+print("Raw model.shape:", model.shape)
+
+# Number of sites actually created
+print("Actual num_sites:", model.num_sites)
+
+# Check if shape is zero-indexed
+shape_plus_one = model.shape + 1
+print("model.shape + 1:", shape_plus_one)
+
+# Expected site counts
+raw_expected = int(model.shape[0] * model.shape[1])
+plus_one_expected = int(shape_plus_one[0] * shape_plus_one[1])
+
+print("Expected sites from raw shape:", raw_expected)
+print("Expected sites from shape+1:", plus_one_expected)
+
+# Diagnose interpretation
+if plus_one_expected == model.num_sites:
+    print("\n✅ Interpretation:")
+    print("model.shape is zero-indexed metadata.")
+    print("So [3,3] actually means a true 4x4 lattice.")
+elif raw_expected == model.num_sites:
+    print("\n✅ Interpretation:")
+    print("model.shape directly stores actual lattice size.")
+else:
+    print("\n❌ WARNING:")
+    print("Shape metadata does NOT match actual site count.")
+    print("Possible lattice construction bug exists.")
+
+print("\n==== END DEBUG ====")

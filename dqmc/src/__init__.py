@@ -1,3 +1,5 @@
+import os
+os.add_dll_directory(r'C:\msys64\ucrt64\bin')
 # coding: utf-8
 #
 # This code is part of dqmc.
